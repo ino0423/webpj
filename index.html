@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>해외 축구 정보 센터</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
@@ -12,24 +12,26 @@
     <h1 id="page-title">⚽ 해외 축구 정보 센터</h1>
   </header>
 
-  <nav>
-  <a href="#" onclick="router('home')">🏠 홈</a>
-    <a href="#" onclick="router('epl')">🇬🇧 EPL</a>
-    <a href="#" onclick="router('bundes')">🇩🇪 분데스</a>
-    <a href="#" onclick="router('laliga')">🇪🇸 라리가</a>
-    <a href="#" onclick="router('vote')">🗳️ 승부예측</a>
-    <a href="#" onclick="router('ligue1')">🇫🇷 리그1</a> <a href="#" onclick="router('vote')">🗳️ 승부예측</a>
-    <a href="#" onclick="router('board')">📝 자유게시판</a> <div id="auth-menu" style="margin-left: auto; padding-right: 20px; display: flex; align-items: center;">
-        <a href="#" onclick="router('login')">🔑 로그인</a>
-  </nav>
+<nav>
+  <a href="javascript:void(0)" onclick="router('home')">🏠 홈</a>
+  <a href="javascript:void(0)" onclick="router('epl')">🇬🇧 EPL</a>
+  <a href="javascript:void(0)" onclick="router('bundes')">🇩🇪 분데스</a>
+  <a href="javascript:void(0)" onclick="router('laliga')">🇪🇸 라리가</a>
+  <a href="javascript:void(0)" onclick="router('ligue1')">🇫🇷 리그1</a>
+  <a href="javascript:void(0)" onclick="router('vote')">🗳️ 승부예측</a>
+  <a href="javascript:void(0)" onclick="router('board')">📝 자유게시판</a>
+  
+  <div id="auth-menu" style="margin-left: auto; padding-right: 20px; display: flex; align-items: center;">
+      <a href="javascript:void(0)" onclick="router('login')">🔑 로그인</a>
+  </div>
+</nav>
 
-  <div id="app" class="container">
-    </div>
+  <div id="app" class="container"></div>
 
   <footer>
     &copy; 2025 Football Hub
   </footer>
 
-  <script src="script.js"></script>
+  <script src="/script.js"></script>
 </body>
 </html>
