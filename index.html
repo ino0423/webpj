@@ -12,26 +12,56 @@
     <h1 id="page-title">⚽ 해외 축구 정보 센터</h1>
   </header>
 
-<nav>
-  <a href="javascript:void(0)" onclick="router('home')">🏠 홈</a>
-  <a href="javascript:void(0)" onclick="router('epl')">🇬🇧 EPL</a>
-  <a href="javascript:void(0)" onclick="router('bundes')">🇩🇪 분데스</a>
-  <a href="javascript:void(0)" onclick="router('laliga')">🇪🇸 라리가</a>
-  <a href="javascript:void(0)" onclick="router('ligue1')">🇫🇷 리그1</a>
-  <a href="javascript:void(0)" onclick="router('vote')">🗳️ 승부예측</a>
-  <a href="javascript:void(0)" onclick="router('board')">📝 자유게시판</a>
-  
-  <div id="auth-menu" style="margin-left: auto; padding-right: 20px; display: flex; align-items: center;">
-      <a href="javascript:void(0)" onclick="router('login')">🔑 로그인</a>
-  </div>
-</nav>
+  <nav>
+    <a href="javascript:void(0)" onclick="router('home')">🏠 홈</a>
+    <a href="javascript:void(0)" onclick="router('epl')">🇬🇧 EPL</a>
+    <a href="javascript:void(0)" onclick="router('bundes')">🇩🇪 분데스</a>
+    <a href="javascript:void(0)" onclick="router('laliga')">🇪🇸 라리가</a>
+    <a href="javascript:void(0)" onclick="router('ligue1')">🇫🇷 리그1</a>
+    <a href="javascript:void(0)" onclick="router('vote')">🗳️ 승부예측</a>
+    <a href="javascript:void(0)" onclick="router('board')">📝 자유게시판</a>
+    
+    <div id="auth-menu" style="margin-left: auto; padding-right: 20px; display: flex; align-items: center;">
+        <a href="javascript:void(0)" onclick="router('login')">🔑 로그인</a>
+    </div>
+  </nav>
 
   <div id="app" class="container"></div>
+
+  <div class="container main-content" style="margin-top: 30px;">
+      <h3 style="border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">💬 방문자 의견</h3>
+      
+      <div id="disqus_thread"></div>
+      <script>
+          (function() {
+          var d = document, s = d.createElement('script');
+          s.src = 'https://web-3r5vzhuvcr.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+          })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+      
+      <p style="margin-top:45px; color:#666; font-size: 14px; line-height: 1.6;">
+        HTML elements are the building blocks of HTML pages. With HTML constructs, images and other objects, such as interactive forms, may be embedded into the rendered page.
+      </p>
+  </div>
 
   <footer>
     &copy; 2025 Football Hub
   </footer>
 
+  <script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/67e9026344bc3b19163f7999/1inj32lhc';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+  </script>
   <script src="/script.js"></script>
 </body>
 </html>

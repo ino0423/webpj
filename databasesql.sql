@@ -35,3 +35,13 @@ CREATE TABLE IF NOT EXISTS board_posts (
     image_url VARCHAR(255) DEFAULT NULL,  -- 첨부파일(이미지) 파일명
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- 작성 시간 자동 기록
 );
+-- 5. 포트폴리오 테이블 (새로 추가!)
+CREATE TABLE IF NOT EXISTS portfolios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,       -- 프로젝트 제목 (예: 소켓 채팅 프로그램)
+    description TEXT,                  -- 설명
+    tech_stack VARCHAR(100),           -- 사용 기술 (예: Python, Socket, Thread)
+    github_link VARCHAR(255),          -- 깃허브 코드 주소
+    image_url VARCHAR(255)             -- 실행 화면 캡쳐 이미지
+);
+
