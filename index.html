@@ -3,65 +3,272 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>해외 축구 정보 센터</title>
+  <title>Football Hub (Vue.js)</title>
   <link rel="stylesheet" href="/style.css">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://unpkg.com/vue-router@4/dist/vue-router.global.js"></script>
 </head>
 <body>
 
-  <header>
-    <h1 id="page-title">⚽ 해외 축구 정보 센터</h1>
-  </header>
+  <div id="app">
+    <header>
+      <h1 id="page-title">⚽ 해외 축구 정보 센터</h1>
+    </header>
 
-  <nav>
-    <a href="javascript:void(0)" onclick="router('home')">🏠 홈</a>
-    <a href="javascript:void(0)" onclick="router('epl')">🇬🇧 EPL</a>
-    <a href="javascript:void(0)" onclick="router('bundes')">🇩🇪 분데스</a>
-    <a href="javascript:void(0)" onclick="router('laliga')">🇪🇸 라리가</a>
-    <a href="javascript:void(0)" onclick="router('ligue1')">🇫🇷 리그1</a>
-    <a href="javascript:void(0)" onclick="router('vote')">🗳️ 승부예측</a>
-    <a href="javascript:void(0)" onclick="router('board')">📝 자유게시판</a>
-    
-    <div id="auth-menu" style="margin-left: auto; padding-right: 20px; display: flex; align-items: center;">
-        <a href="javascript:void(0)" onclick="router('login')">🔑 로그인</a>
+    <nav>
+      <router-link to="/">🏠 홈</router-link>
+      <router-link to="/soccer/PL">🇬🇧 EPL</router-link>
+      <router-link to="/soccer/BL1">🇩🇪 분데스</router-link>
+      <router-link to="/soccer/PD">🇪🇸 라리가</router-link>
+      <router-link to="/soccer/FL1">🇫🇷 리그1</router-link>
+      <router-link to="/vote">🗳️ 승부예측</router-link>
+      <router-link to="/board">📝 자유게시판</router-link>
+      
+      <div id="auth-menu" style="margin-left: auto; padding-right: 20px; display: flex; align-items: center;">
+        <span v-if="currentUser" style="color:#dcdde1; margin-right:15px;">👋 {{ currentUser }}님</span>
+        <a v-if="currentUser" href="javascript:void(0)" @click="logout" style="color:#ff7675;">로그아웃</a>
+        <router-link v-else to="/login" style="color:#74b9ff;">🔑 로그인</router-link>
+      </div>
+    </nav>
+
+    <div class="container">
+        <router-view></router-view>
     </div>
-  </nav>
 
-  <div id="app" class="container"></div>
-
-  <div class="container main-content" style="margin-top: 30px;">
-      <h3 style="border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">💬 방문자 의견</h3>
-      
-      <div id="disqus_thread"></div>
-      <script>
-          (function() {
-          var d = document, s = d.createElement('script');
-          s.src = 'https://web-3r5vzhuvcr.disqus.com/embed.js';
-          s.setAttribute('data-timestamp', +new Date());
-          (d.head || d.body).appendChild(s);
-          })();
-      </script>
-      <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-      
-      <p style="margin-top:45px; color:#666; font-size: 14px; line-height: 1.6;">
-        HTML elements are the building blocks of HTML pages. With HTML constructs, images and other objects, such as interactive forms, may be embedded into the rendered page.
-      </p>
+    <footer>
+      &copy; 2025 Football Hub (Powered by Vue.js)
+    </footer>
   </div>
 
-  <footer>
-    &copy; 2025 Football Hub
-  </footer>
-
-  <script type="text/javascript">
-    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-    (function(){
-    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-    s1.async=true;
-    s1.src='https://embed.tawk.to/67e9026344bc3b19163f7999/1inj32lhc';
-    s1.charset='UTF-8';
-    s1.setAttribute('crossorigin','*');
-    s0.parentNode.insertBefore(s1,s0);
-    })();
+  <script type="text/x-template" id="home-template">
+    <div class="main-content">
+      <h2 style="text-align:center;">🔥 오늘의 핫매치 & 하이라이트</h2>
+      <div class="flex-box">
+        <div class="side-img"><img src="/soccer1.png" onerror="this.style.display='none'"></div>
+        <div class="video-box">
+           <iframe width="100%" height="315" src="https://www.youtube.com/embed/Pq-6A6y-sXw" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="side-img"><img src="/soccer1.png" onerror="this.style.display='none'"></div>
+      </div>
+      <div style="text-align:center; margin-top:30px; padding:20px; background:#f8f9fa; border-radius:10px;">
+          <p style="margin-bottom:15px; color:#555;">상단 메뉴에서 리그 정보를 확인하거나,<br>제가 만든 다른 프로젝트들을 구경해보세요!</p>
+          <div style="display:flex; justify-content:center; gap:10px;">
+              <router-link to="/vote" class="menu-btn" style="text-align:center; display:inline-block; line-height:15px;">🏆 승부예측</router-link>
+              <router-link to="/portfolio" class="menu-btn" style="background:#333; color:white; text-align:center; display:inline-block; line-height:15px;">💻 포트폴리오</router-link>
+          </div>
+      </div>
+    </div>
   </script>
+
+  <script type="text/x-template" id="league-menu-template">
+    <div class="main-content" style="text-align:center;">
+        <img :src="logo" style="width:100px; margin-bottom:20px;">
+        <h3>{{ leagueName }} 정보를 선택하세요</h3>
+        <div style="display:flex; flex-direction:column; align-items:center; gap: 10px; margin-top: 20px;">
+            <router-link :to="`/soccer/${code}/rank`" class="menu-btn">🏆 순위 보기</router-link>
+            <router-link :to="`/soccer/${code}/schedule`" class="menu-btn">📅 경기 일정</router-link>
+            <router-link :to="`/soccer/${code}/results`" class="menu-btn">⚽ 경기 결과</router-link>
+        </div>
+        <div style="margin-top:20px;">
+             <router-link to="/" class="btn-back">메인으로</router-link>
+        </div>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="data-view-template">
+    <div class="main-content">
+        <div v-if="loading"><h2>Loading...</h2></div>
+        <div v-else>
+            <div style="text-align:center;">
+                <img :src="logo" width="80"><h2>{{ title }}</h2>
+            </div>
+            
+            <table v-if="type === 'rank'">
+                <tr><th>순위</th><th>팀</th><th>승점</th><th>승</th><th>무</th><th>패</th></tr>
+                <tr v-for="t in dataList" :key="t.rank">
+                    <td>{{ t.rank }}</td>
+                    <td style="text-align:left; display:flex; align-items:center; gap:10px;">
+                        <img :src="t.img" width="30" height="30" style="object-fit:contain;"> {{ t.name }}
+                    </td>
+                    <td>{{ t.pts }}</td><td>{{ t.w }}</td><td>{{ t.d }}</td><td>{{ t.l }}</td>
+                </tr>
+            </table>
+
+            <table v-if="type === 'schedule'">
+                <tr><th>날짜</th><th>홈</th><th>VS</th><th>원정</th></tr>
+                <tr v-for="m in dataList" :key="m.date + m.home">
+                    <td>{{ m.date }} {{ m.time }}</td>
+                    <td style="text-align:right;">{{ m.home }} <img :src="m.homeImg" width="25" style="vertical-align:middle;"></td>
+                    <td style="font-weight:bold;">VS</td>
+                    <td style="text-align:left;"><img :src="m.awayImg" width="25" style="vertical-align:middle;"> {{ m.away }}</td>
+                </tr>
+            </table>
+
+            <table v-if="type === 'results'">
+                <tr><th>날짜</th><th>홈</th><th>점수</th><th>원정</th></tr>
+                <tr v-for="m in dataList" :key="m.date + m.home">
+                    <td>{{ m.date }}</td>
+                    <td style="text-align:right;">{{ m.home }} <img :src="m.homeImg" width="25" style="vertical-align:middle;"></td>
+                    <td style="font-weight:bold; color:#e84118;">{{ m.homeScore }} : {{ m.awayScore }}</td>
+                    <td style="text-align:left;"><img :src="m.awayImg" width="25" style="vertical-align:middle;"> {{ m.away }}</td>
+                </tr>
+            </table>
+
+            <div style="text-align:center;"><button class="btn-back" @click="$router.go(-1)">뒤로가기</button></div>
+        </div>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="vote-template">
+    <div class="main-content">
+        <div style="text-align:center; margin-bottom:30px;">
+            <h2>🗳️ 이번 주 빅매치 승부예측</h2>
+            <p>여러분의 축구 지식을 뽐내보세요!</p>
+        </div>
+        <div class="vote-container">
+            <div v-for="(m, index) in matches" :key="index" class="vote-card">
+                <div class="match-info">{{ m.date }} {{ m.time }} | {{ m.stadium || 'Stadium' }}</div>
+                <div class="match-teams">
+                    <span class="team-name">{{ m.home }}</span> 
+                    <span style="font-size:14px; color:#aaa;">VS</span> 
+                    <span class="team-name">{{ m.away }}</span>
+                </div>
+                
+                <div class="vote-btns" v-if="!m.voted">
+                    <button class="vote-btn btn-home" @click="castVote(m, 'home')">홈승</button>
+                    <button class="vote-btn btn-draw" @click="castVote(m, 'draw')">무승부</button>
+                    <button class="vote-btn btn-away" @click="castVote(m, 'away')">원정승</button>
+                </div>
+                
+                <div class="vote-result-box" v-else>
+                    <div class="vote-result-bar">
+                        <div :style="{width: m.result.home + '%', background:'#0097e6', height:'100%'}"></div>
+                        <div :style="{width: m.result.draw + '%', background:'#7f8c8d', height:'100%'}"></div>
+                        <div :style="{width: m.result.away + '%', background:'#e84118', height:'100%'}"></div>
+                    </div>
+                    <div class="result-txt">
+                        <span style="color:#0097e6">{{ m.result.home }}%</span>
+                        <span style="color:#7f8c8d">{{ m.result.draw }}%</span>
+                        <span style="color:#e84118">{{ m.result.away }}%</span>
+                    </div>
+                    <p style="text-align:center; font-size:12px; margin-top:5px; color:#666;">총 {{ m.result.total }}명 참여</p>
+                </div>
+            </div>
+        </div>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="board-template">
+    <div class="main-content">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2>📝 자유게시판</h2>
+            <router-link v-if="currentUser" to="/write" class="menu-btn btn-home" style="width:auto;">글쓰기</router-link>
+        </div>
+        <table>
+            <tr><th>번호</th><th>제목</th><th>작성자</th><th>날짜</th></tr>
+            <tr v-for="p in posts" :key="p.id">
+                <td>{{ p.id }}</td>
+                <td style="text-align:left; cursor:pointer;" @click="$router.push('/board/' + p.id)">
+                    {{ p.title }} <span v-if="p.image_url">📷</span>
+                </td>
+                <td>{{ p.author }}</td>
+                <td>{{ p.date }}</td>
+            </tr>
+        </table>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="post-detail-template">
+    <div class="main-content">
+        <div class="post-detail-box" v-if="post">
+            <div class="detail-header">
+                <h2>{{ post.title }}</h2>
+                <p>작성자: {{ post.author }} | {{ post.date }}</p>
+            </div>
+            <div class="detail-content">
+                <img v-if="post.image_url" :src="'/uploads/'+post.image_url" style="max-width:100%; border-radius:10px; margin-bottom:20px;">
+                <p>{{ post.content }}</p>
+            </div>
+            
+            <div style="margin-top:30px; border-top:1px solid #eee; padding-top:20px;">
+                <h3>💬 댓글 ({{ comments.length }})</h3>
+                <div style="margin-bottom:20px;">
+                    <div v-for="c in comments" :key="c._id" style="background:#f1f2f6; padding:10px; margin-top:5px; border-radius:5px;">
+                        <strong>{{ c.author }}</strong> <span style="font-size:12px; color:#666;">{{ c.date }}</span>
+                        <p style="margin:5px 0 0 0;">{{ c.content }}</p>
+                    </div>
+                    <p v-if="comments.length === 0">첫 댓글을 남겨보세요!</p>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <input v-model="newComment" type="text" class="input-field" placeholder="댓글 내용..." style="margin-bottom:0;">
+                    <button class="menu-btn btn-home" style="width:100px; margin:0;" @click="addComment">등록</button>
+                </div>
+            </div>
+
+            <div style="margin-top:20px; text-align:center;">
+                <router-link to="/board" class="btn-back">목록으로</router-link>
+                <button v-if="isAuthor" class="btn-back btn-red" @click="deletePost">삭제</button>
+            </div>
+        </div>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="write-template">
+    <div class="main-content">
+        <h2>🖊️ 글쓰기</h2>
+        <input v-model="title" type="text" class="input-field" placeholder="제목">
+        <textarea v-model="content" class="input-field" style="height:200px;" placeholder="내용"></textarea>
+        <input type="file" ref="fileInput" class="input-field">
+        <button class="menu-btn btn-home" @click="submitPost">등록하기</button>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="login-template">
+    <div class="main-content" style="text-align:center; max-width:400px; margin:auto;">
+        <h2>🔑 로그인</h2>
+        <input v-model="username" type="text" class="input-field" placeholder="아이디">
+        <input v-model="password" type="password" class="input-field" placeholder="비밀번호">
+        <button class="menu-btn btn-home" @click="login">로그인</button>
+        <router-link to="/register" class="menu-btn" style="display:block;">회원가입</router-link>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="register-template">
+    <div class="main-content" style="text-align:center; max-width:400px; margin:auto;">
+        <h2>✨ 회원가입</h2>
+        <input v-model="username" type="text" class="input-field" placeholder="아이디">
+        <input v-model="password" type="password" class="input-field" placeholder="비밀번호">
+        <input v-model="nickname" type="text" class="input-field" placeholder="닉네임">
+        <button class="menu-btn btn-home" @click="register">가입하기</button>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="portfolio-template">
+    <div class="main-content">
+        <div style="text-align:center; margin-bottom:30px;">
+            <h2 style="font-size:28px;">👨‍💻 개발자 포트폴리오</h2>
+            <div style="background:#f8f9fa; padding:20px; border-radius:10px; display:inline-block; text-align:left; max-width:600px; width:100%;">
+                <p style="margin:5px 0;"><strong>👤 이름:</strong> 조인오</p>
+                <p style="margin:5px 0;"><strong>📞 연락처:</strong> 010-2664-9432</p>
+                <p style="margin:5px 0;"><strong>🛠️ 기술 스택:</strong> Node.js, Express, MySQL, MongoDB, Vue.js</p>
+            </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            <div v-for="p in projects" :key="p.title" style="border:1px solid #ddd; border-radius:10px; overflow:hidden;">
+                <img :src="p.img || 'https://placehold.co/600x400?text=No+Image'" style="width:100%; height:180px; object-fit:cover;">
+                <div style="padding:20px;">
+                    <h3>{{ p.title }}</h3>
+                    <p>{{ p.desc }}</p>
+                    <div style="margin-top:10px;">
+                        <span v-for="t in p.tech.split(',')" style="background:#e3f2fd; color:#1976d2; font-size:12px; padding:3px 8px; border-radius:10px; margin-right:5px;">{{ t.trim() }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="text-align:center; margin-top:30px;"><router-link to="/" class="btn-back">메인으로</router-link></div>
+    </div>
+  </script>
+
   <script src="/script.js"></script>
 </body>
 </html>
