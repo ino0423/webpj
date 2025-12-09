@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Football Hub (Vue.js)</title>
+  <title>Football Hub (Vue.js + AI)</title>
   <link rel="stylesheet" href="/style.css">
+  
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <script src="https://unpkg.com/vue-router@4/dist/vue-router.global.js"></script>
+  
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js"></script>
 </head>
 <body>
 
@@ -23,8 +26,7 @@
       <router-link to="/soccer/FL1">🇫🇷 리그1</router-link>
       <router-link to="/vote">🗳️ 승부예측</router-link>
       <router-link to="/board">📝 자유게시판</router-link>
-      
-      <div id="auth-menu" style="margin-left: auto; padding-right: 20px; display: flex; align-items: center;">
+      <router-link to="/ai">🤖 AI 분석</router-link> <div id="auth-menu" style="margin-left: auto; padding-right: 20px; display: flex; align-items: center;">
         <span v-if="currentUser" style="color:#dcdde1; margin-right:15px;">👋 {{ currentUser }}님</span>
         <a v-if="currentUser" href="javascript:void(0)" @click="logout" style="color:#ff7675;">로그아웃</a>
         <router-link v-else to="/login" style="color:#74b9ff;">🔑 로그인</router-link>
@@ -35,10 +37,34 @@
         <router-view></router-view>
     </div>
 
+    <div class="container main-content" style="margin-top: 30px;">
+        <div id="disqus_thread"></div>
+        <script>
+            (function() {
+            var d = document, s = d.createElement('script');
+            s.src = 'https://web-3r5vzhuvcr.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    </div>
+
     <footer>
-      &copy; 2025 Football Hub (Powered by Vue.js)
+      &copy; 2025 Football Hub (Powered by Vue.js & TensorFlow.js)
     </footer>
   </div>
+
+  <script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/67e9026344bc3b19163f7999/1inj32lhc';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+  </script>
 
   <script type="text/x-template" id="home-template">
     <div class="main-content">
@@ -54,7 +80,42 @@
           <p style="margin-bottom:15px; color:#555;">상단 메뉴에서 리그 정보를 확인하거나,<br>제가 만든 다른 프로젝트들을 구경해보세요!</p>
           <div style="display:flex; justify-content:center; gap:10px;">
               <router-link to="/vote" class="menu-btn" style="text-align:center; display:inline-block; line-height:15px;">🏆 승부예측</router-link>
+              <router-link to="/ai" class="menu-btn" style="background:#6c5ce7; color:white; text-align:center; display:inline-block; line-height:15px;">🤖 AI 분석</router-link>
               <router-link to="/portfolio" class="menu-btn" style="background:#333; color:white; text-align:center; display:inline-block; line-height:15px;">💻 포트폴리오</router-link>
+          </div>
+      </div>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="ai-template">
+    <div class="main-content">
+      <div style="text-align:center; margin-bottom:30px;">
+          <h2>🤖 AI 승률 예측기</h2>
+          <p style="color:#666;">TensorFlow.js 딥러닝 모델이 실시간으로 학습하여 승률을 예측합니다.</p>
+      </div>
+  
+      <div style="max-width:500px; margin:0 auto;">
+          <div style="background:#f8f9fa; padding:25px; border-radius:15px; box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+              <h3 style="text-align:center; margin-top:0;">📊 전력 비교 (순위 입력)</h3>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                  <div style="text-align:center;">
+                      <label style="display:block; font-weight:bold; margin-bottom:5px;">홈팀 순위</label>
+                      <input v-model.number="homeRank" type="number" class="input-field" placeholder="1~20위" style="width:80px; text-align:center;">
+                  </div>
+                  <div style="font-weight:bold; font-size:20px; color:#aaa;">VS</div>
+                  <div style="text-align:center;">
+                      <label style="display:block; font-weight:bold; margin-bottom:5px;">원정팀 순위</label>
+                      <input v-model.number="awayRank" type="number" class="input-field" placeholder="1~20위" style="width:80px; text-align:center;">
+                  </div>
+              </div>
+              
+              <button v-if="!loading" class="menu-btn btn-home" @click="predict" style="width:100%;">🚀 승률 예측하기</button>
+              <button v-else class="menu-btn" style="width:100%; background:#ccc; cursor:not-allowed;">🔄 모델 학습 중... (잠시만요)</button>
+          </div>
+  
+          <div v-if="prediction !== null" style="margin-top:20px; padding:20px; background:#e3f2fd; border-radius:10px; text-align:center; border:2px solid #2196f3; animation: fadeIn 0.5s;">
+              <h3 style="margin:0 0 10px 0;">예측 결과</h3>
+              <p style="font-size:18px; margin:0;">홈팀 승리 확률: <strong style="color:#2196f3; font-size:28px;">{{ prediction }}%</strong></p>
           </div>
       </div>
     </div>
@@ -82,7 +143,6 @@
             <div style="text-align:center;">
                 <img :src="logo" width="80"><h2>{{ title }}</h2>
             </div>
-            
             <table v-if="type === 'rank'">
                 <tr><th>순위</th><th>팀</th><th>승점</th><th>승</th><th>무</th><th>패</th></tr>
                 <tr v-for="t in dataList" :key="t.rank">
@@ -93,7 +153,6 @@
                     <td>{{ t.pts }}</td><td>{{ t.w }}</td><td>{{ t.d }}</td><td>{{ t.l }}</td>
                 </tr>
             </table>
-
             <table v-if="type === 'schedule'">
                 <tr><th>날짜</th><th>홈</th><th>VS</th><th>원정</th></tr>
                 <tr v-for="m in dataList" :key="m.date + m.home">
@@ -103,7 +162,6 @@
                     <td style="text-align:left;"><img :src="m.awayImg" width="25" style="vertical-align:middle;"> {{ m.away }}</td>
                 </tr>
             </table>
-
             <table v-if="type === 'results'">
                 <tr><th>날짜</th><th>홈</th><th>점수</th><th>원정</th></tr>
                 <tr v-for="m in dataList" :key="m.date + m.home">
@@ -113,7 +171,6 @@
                     <td style="text-align:left;"><img :src="m.awayImg" width="25" style="vertical-align:middle;"> {{ m.away }}</td>
                 </tr>
             </table>
-
             <div style="text-align:center;"><button class="btn-back" @click="$router.go(-1)">뒤로가기</button></div>
         </div>
     </div>
@@ -123,23 +180,18 @@
     <div class="main-content">
         <div style="text-align:center; margin-bottom:30px;">
             <h2>🗳️ 이번 주 빅매치 승부예측</h2>
-            <p>여러분의 축구 지식을 뽐내보세요!</p>
         </div>
         <div class="vote-container">
             <div v-for="(m, index) in matches" :key="index" class="vote-card">
                 <div class="match-info">{{ m.date }} {{ m.time }} | {{ m.stadium || 'Stadium' }}</div>
                 <div class="match-teams">
-                    <span class="team-name">{{ m.home }}</span> 
-                    <span style="font-size:14px; color:#aaa;">VS</span> 
-                    <span class="team-name">{{ m.away }}</span>
+                    <span class="team-name">{{ m.home }}</span> vs <span class="team-name">{{ m.away }}</span>
                 </div>
-                
                 <div class="vote-btns" v-if="!m.voted">
                     <button class="vote-btn btn-home" @click="castVote(m, 'home')">홈승</button>
                     <button class="vote-btn btn-draw" @click="castVote(m, 'draw')">무승부</button>
                     <button class="vote-btn btn-away" @click="castVote(m, 'away')">원정승</button>
                 </div>
-                
                 <div class="vote-result-box" v-else>
                     <div class="vote-result-bar">
                         <div :style="{width: m.result.home + '%', background:'#0097e6', height:'100%'}"></div>
@@ -151,7 +203,6 @@
                         <span style="color:#7f8c8d">{{ m.result.draw }}%</span>
                         <span style="color:#e84118">{{ m.result.away }}%</span>
                     </div>
-                    <p style="text-align:center; font-size:12px; margin-top:5px; color:#666;">총 {{ m.result.total }}명 참여</p>
                 </div>
             </div>
         </div>
@@ -168,9 +219,7 @@
             <tr><th>번호</th><th>제목</th><th>작성자</th><th>날짜</th></tr>
             <tr v-for="p in posts" :key="p.id">
                 <td>{{ p.id }}</td>
-                <td style="text-align:left; cursor:pointer;" @click="$router.push('/board/' + p.id)">
-                    {{ p.title }} <span v-if="p.image_url">📷</span>
-                </td>
+                <td style="text-align:left; cursor:pointer;" @click="$router.push('/board/' + p.id)">{{ p.title }} <span v-if="p.image_url">📷</span></td>
                 <td>{{ p.author }}</td>
                 <td>{{ p.date }}</td>
             </tr>
@@ -189,7 +238,6 @@
                 <img v-if="post.image_url" :src="'/uploads/'+post.image_url" style="max-width:100%; border-radius:10px; margin-bottom:20px;">
                 <p>{{ post.content }}</p>
             </div>
-            
             <div style="margin-top:30px; border-top:1px solid #eee; padding-top:20px;">
                 <h3>💬 댓글 ({{ comments.length }})</h3>
                 <div style="margin-bottom:20px;">
@@ -197,14 +245,12 @@
                         <strong>{{ c.author }}</strong> <span style="font-size:12px; color:#666;">{{ c.date }}</span>
                         <p style="margin:5px 0 0 0;">{{ c.content }}</p>
                     </div>
-                    <p v-if="comments.length === 0">첫 댓글을 남겨보세요!</p>
                 </div>
                 <div style="display:flex; gap:10px;">
                     <input v-model="newComment" type="text" class="input-field" placeholder="댓글 내용..." style="margin-bottom:0;">
                     <button class="menu-btn btn-home" style="width:100px; margin:0;" @click="addComment">등록</button>
                 </div>
             </div>
-
             <div style="margin-top:20px; text-align:center;">
                 <router-link to="/board" class="btn-back">목록으로</router-link>
                 <button v-if="isAuthor" class="btn-back btn-red" @click="deletePost">삭제</button>
@@ -248,19 +294,18 @@
         <div style="text-align:center; margin-bottom:30px;">
             <h2 style="font-size:28px;">👨‍💻 개발자 포트폴리오</h2>
             <div style="background:#f8f9fa; padding:20px; border-radius:10px; display:inline-block; text-align:left; max-width:600px; width:100%;">
-                <p style="margin:5px 0;"><strong>👤 이름:</strong> 조인오</p>
-                <p style="margin:5px 0;"><strong>📞 연락처:</strong> 010-2664-9432</p>
-                <p style="margin:5px 0;"><strong>🛠️ 기술 스택:</strong> Node.js, Express, MySQL, MongoDB, Vue.js</p>
+                <p><strong>👤 이름:</strong> 조인오</p>
+                <p><strong>🛠️ 기술:</strong> Node.js, Express, MySQL, MongoDB, Vue.js, TensorFlow.js</p>
             </div>
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
             <div v-for="p in projects" :key="p.title" style="border:1px solid #ddd; border-radius:10px; overflow:hidden;">
-                <img :src="p.img || 'https://placehold.co/600x400?text=No+Image'" style="width:100%; height:180px; object-fit:cover;">
+                <img :src="p.img || 'https://placehold.co/600x400'" style="width:100%; height:180px; object-fit:cover;">
                 <div style="padding:20px;">
                     <h3>{{ p.title }}</h3>
                     <p>{{ p.desc }}</p>
                     <div style="margin-top:10px;">
-                        <span v-for="t in p.tech.split(',')" style="background:#e3f2fd; color:#1976d2; font-size:12px; padding:3px 8px; border-radius:10px; margin-right:5px;">{{ t.trim() }}</span>
+                        <span v-for="t in (p.tech ? p.tech.split(',') : [])" style="background:#e3f2fd; color:#1976d2; font-size:12px; padding:3px 8px; border-radius:10px; margin-right:5px;">{{ t.trim() }}</span>
                     </div>
                 </div>
             </div>
