@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+      - name: mariadb
+        image: mariadb:10.6
+        ports:
+        - containerPort: 3306
+        env:
+        # DB 비밀번호는 간단하게 1234로 설정했습니다. 나중에 바꾸셔도 됩니다.
+        - name: MARIADB_ROOT_PASSWORD
+          value: "1234"
+        # databasesql.sql 파일에 있는 DB 이름과 똑같이 맞췄습니다.
+        - name: MARIADB_DATABASE
+          value: "sports_db"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb-service
+spec:
+  selector:
+    app: mariadb
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306

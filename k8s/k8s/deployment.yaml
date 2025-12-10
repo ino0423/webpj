@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sports-web-deployment
+  labels:
+    app: sports-web
+spec:
+  replicas: 2                     # 서버를 2개 복제해서 띄움 (고가용성)
+  selector:
+    matchLabels:
+      app: sports-web
+  template:
+    metadata:
+      labels:
+        app: sports-web
+    spec:
+      containers:
+      - name: sports-web-container
+        image: sports-web-image:v1  # Docker로 빌드한 이미지 이름 (나중에 실제 이름으로 변경)
+        ports:
+        - containerPort: 3000       # 우리 서버가 쓰는 포트 번호
+        env:                        # 환경 변수 설정 (DB 정보 등)
+        - name: DB_HOST
+          value: "mysql-service"    # 쿠버네티스 내부 DB 주소 (예시)
+        - name: DB_USER
+          value: "root"
+        - name: DB_PASS
+          value: "ino7541!"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
