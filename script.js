@@ -1,4 +1,4 @@
-const API_BASE = 'https://<your-backend>.onrender.com/api';
+const API_BASE = 'https://webpj-a741.onrender.com/api';
 
 
 // === 컴포넌트 정의 ===
