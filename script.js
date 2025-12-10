@@ -1,4 +1,5 @@
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = 'https://<your-backend>.onrender.com/api';
+
 
 // === 컴포넌트 정의 ===
 
