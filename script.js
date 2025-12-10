@@ -170,30 +170,24 @@ const AiAnalysis = {
         return { homeRank: 5, awayRank: 15, prediction: null, model: null, loading: false };
     },
     mounted() {
-        setTimeout(() => this.initModel(), 1000);
+        // 0.5초 뒤에 초기화 시도
+        setTimeout(() => this.initModel(), 500);
     },
     methods: {
         async initModel() {
             this.loading = true;
-
             try {
+                // 1. 텐서플로우 로드 확인
                 if (!window.tf) {
-                    console.log("TensorFlow 로딩 대기 중...");
+                    console.log("TF 로딩 대기...");
                     setTimeout(() => this.initModel(), 500);
                     return;
                 }
 
-                // 🚨 [여기가 핵심입니다!] 🚨
-                // 순서를 바꿨습니다. CPU 설정을 가장 먼저 해야 에러가 안 납니다.
-                
-                // 1. "나 CPU 쓸 거야!" 라고 먼저 선언 (그래픽카드 초기화 시도 자체를 막음)
-                await window.tf.setBackend('cpu'); 
-                
-                // 2. 그 다음에 준비 완료 기다리기
-                await window.tf.ready();
-
-                console.log("현재 백엔드:", window.tf.getBackend()); // 'cpu'가 찍혀야 성공
-
+             // 2. 강제로 'cpu' 설정을 하지 말고, ready()만 호출 (이게 핵심!)
+            await window.tf.ready();
+            console.log("TF 로드 완료. 현재 모드:", window.tf.getBackend());
+            
                 // 3. 모델 정의
                 this.model = window.tf.sequential();
                 this.model.add(window.tf.layers.dense({units: 8, inputShape: [2], activation: 'relu'}));
@@ -201,7 +195,7 @@ const AiAnalysis = {
                 
                 this.model.compile({loss: 'meanSquaredError', optimizer: 'adam'});
 
-                // 4. 학습 데이터
+                // 4. 학습 데이터 (단순화)
                 const xs = window.tf.tensor2d([
                     [0.05, 1.0], [0.1, 0.9], [0.15, 0.75], 
                     [1.0, 0.05], [0.9, 0.1], [0.75, 0.15], 
@@ -214,35 +208,29 @@ const AiAnalysis = {
                 ]);
 
                 console.log("학습 시작...");
-                await this.model.fit(xs, ys, {epochs: 30});
-                console.log("학습 완료!");
+                await this.model.fit(xs, ys, {epochs: 10}); // 에폭 줄임 (빠른 테스트용)
+                console.log("학습 완료");
                 
                 this.loading = false;
 
             } catch (e) {
                 console.error(e);
-                alert("AI 초기화 에러:\n" + e.message);
+                alert("초기화 오류: " + e.message);
                 this.loading = false;
             }
         },
         predict() {
-            if (!this.model) return alert("모델이 준비되지 않았습니다.");
-            if (this.loading) return alert('아직 학습 중입니다.');
-
-            try {
+            if (!this.model) return alert("모델 로딩 중입니다.");
+            
+            // tidy: 메모리 자동 정리 함수
+            window.tf.tidy(() => {
                 const h = Number(this.homeRank);
                 const a = Number(this.awayRank);
-                if (!h || !a || h < 1 || a < 1) return alert("1 이상의 순위를 입력하세요.");
-
                 const input = window.tf.tensor2d([[h / 20, a / 20]]);
                 const result = this.model.predict(input);
                 const prob = result.dataSync()[0];
-                
                 this.prediction = (prob * 100).toFixed(1);
-
-            } catch (e) {
-                alert("예측 에러: " + e.message);
-            }
+            });
         }
     }
 };
